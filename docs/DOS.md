@@ -1,6 +1,6 @@
 # Smart Contract Security: Denial of Service (DoS) via Unexpected Revert
 
-A complete educational manual, architectural specification, and laboratory guide for demonstrating Denial of Service attacks in Ethereum smart contracts using Remix IDE.
+A complete educational manual, architectural specification, and hands-on laboratory guide for demonstrating Denial of Service attacks in Ethereum smart contracts using Remix IDE.
 
 ---
 
@@ -20,25 +20,29 @@ A complete educational manual, architectural specification, and laboratory guide
 * [4.3 SecureAuction.sol](https://www.google.com/search?q=%2343-secureauctionsol)
 
 
-5. [Classroom Laboratory Walkthrough (Remix IDE)](https://www.google.com/search?q=%235-classroom-laboratory-walkthrough-remix-ide)
-* [Phase A: Deploying and Exploiting the Vulnerable Contract](https://www.google.com/search?q=%23phase-a-deploying-and-exploiting-the-vulnerable-contract)
-* [Phase B: Testing the Resilient Pull Pattern](https://www.google.com/search?q=%23phase-b-testing-the-resilient-pull-pattern)
+5. [Complete Hands-On Remix IDE Lab Guide](https://www.google.com/search?q=%235-complete-hands-on-remix-ide-lab-guide)
+* [Step 1: Remix IDE Workspace & Compiler Setup](https://www.google.com/search?q=%23step-1-remix-ide-workspace--compiler-setup)
+* [Step 2: Deploying the Vulnerable Target](https://www.google.com/search?q=%23step-2-deploying-the-vulnerable-target)
+* [Step 3: Student A Places a Legitimate Bid](https://www.google.com/search?q=%23step-3-student-a-places-a-legitimate-bid)
+* [Step 4: The Attacker Exploit Contract Enters](https://www.google.com/search?q=%23step-4-the-attacker-exploit-contract-enters)
+* [Step 5: Verifying the Denial of Service (The Lockout)](https://www.google.com/search?q=%23step-5-verifying-the-denial-of-service-the-lockout)
+* [Step 6: Deploying & Verifying the Secure Fix](https://www.google.com/search?q=%23step-6-deploying--verifying-the-secure-fix)
 
 
 6. [Why Did It Revert? Deep Dive into the EVM](https://www.google.com/search?q=%236-why-did-it-revert-deep-dive-into-the-evm)
-7. [Student Summary & Best Practices](https://www.google.com/search?q=%237-student-summary--best-practices)
+7. [Summary & Best Practices](https://www.google.com/search?q=%237-summary--best-practices)
 
 ---
 
 ## 1. Core Concepts: What is a Smart Contract DoS?
 
-In traditional web infrastructure, a **Denial of Service (DoS)** attack typically entails flooding a server with millions of junk requests until network bandwidth saturates or hardware resources crash.
+In traditional web infrastructure, a **Denial of Service (DoS)** attack typically entails flooding a server with high volumes of traffic until network bandwidth saturates or hardware crashes.
 
 In smart contract architecture, **DoS operates on code logic and execution rules**:
 
-* A smart contract cannot physically crash; its byte-code runs on all participating nodes in the decentralized network.
-* If a critical operation in a function encounters an unhandled exception or an explicit `revert()`, the Ethereum Virtual Machine (EVM) **reverts the entire transaction**.
-* If an attacker can manipulate contract state so that a required step permanently fails for all subsequent users, the contract is rendered completely frozen.
+* A smart contract cannot physically crash; its bytecode executes deterministically across all nodes on the blockchain network.
+* If an essential operation within a transaction reverts or runs out of gas, the Ethereum Virtual Machine (EVM) **reverts the entire transaction**.
+* If an attacker crafts a contract state where a required step permanently reverts for all subsequent users, the contract is rendered completely frozen.
 
 ---
 
@@ -75,6 +79,7 @@ sequenceDiagram
     V-->>B: Transaction reverted
     deactivate V
     Note over B: Bid cancelled and Attacker stays on top
+
 ```
 
 ---
@@ -95,14 +100,14 @@ sequenceDiagram
     StudentB->>Auction: bid{value: 3 ETH}()
     activate Auction
     Note over Auction: pendingReturns[Attacker] += 2 ETH<br/>highestBidder = Student B<br/>highestBid = 3 ETH
-    Auction-->>StudentB: ✅ Transaction Success! (New highest bidder set)
+    Auction-->>StudentB: Transaction Success! (New highest bidder set)
     deactivate Auction
 
     Note over StudentA,Auction: Legitimate users withdraw their own refunds independently
     StudentA->>Auction: withdraw()
     activate Auction
     Auction->>StudentA: call{value: pendingBalance}("")
-    Auction-->>StudentA: ✅ Funds retrieved!
+    Auction-->>StudentA: Funds retrieved!
     deactivate Auction
 
 ```
@@ -111,7 +116,7 @@ sequenceDiagram
 
 ### 3.3 EVM Call Stack & Revert Flow
 
-This flowchart details how the EVM enforces atomicity across the call boundary when a sub-call fails.
+This flowchart details how the EVM enforces atomicity across the call boundary when an external sub-call fails.
 
 ```mermaid
 flowchart TD
@@ -136,7 +141,7 @@ flowchart TD
 
 ## 4. Source Code Implementation
 
-Save each contract in its own dedicated file in your Remix IDE workspace:
+Create three separate files in your Remix IDE workspace:
 
 ### 4.1 `VulnerableAuction.sol`
 
@@ -238,53 +243,105 @@ contract SecureAuction {
 
 ---
 
-## 5. Classroom Laboratory Walkthrough (Remix IDE)
+## 5. Complete Hands-On Remix IDE Lab Guide
 
-### Setup
+This section is a complete, beginner-friendly walkthrough built for instructors and students to execute the exploit and verify the defense directly inside [Remix IDE (remix.ethereum.org)](https://remix.ethereum.org) without needing command-line tools or external installations.
 
-1. Open [Remix IDE](https://remix.ethereum.org/).
-2. Create the three files (`VulnerableAuction.sol`, `Attacker.sol`, and `SecureAuction.sol`) under the `contracts/` directory.
-3. Open the **Solidity Compiler** tab and ensure the compiler version is `0.8.20` or higher. Compile each file (`Ctrl+S` / `Cmd+S`).
-4. Go to the **Deploy & Run Transactions** tab and set **Environment** to `Remix VM (Cancun)`.
+### Understanding the Remix IDE Interface
+
+Before executing transactions, note the three key tabs on the left navigation bar:
+
+* **File Explorer (Folder icon):** Where files are created and managed.
+* **Solidity Compiler (Solidity logo icon):** Where code is compiled into EVM bytecode.
+* **Deploy & Run Transactions (Ethereum logo with arrow):** Where accounts, environments, and contract interactions are configured.
 
 ---
 
-### Phase A: Deploying and Exploiting the Vulnerable Contract
+### Step 1: Remix IDE Workspace & Compiler Setup
 
-```
-Step 1: Deploy VulnerableAuction
-Step 2: Account 1 bids 1 ETH  ------> Account 1 is highestBidder
-Step 3: Attacker bids 2 ETH   ------> Attacker is highestBidder
-Step 4: Account 3 bids 3 ETH  ------> 💥 REVERT! DoS Active
-
-```
-
-1. **Deploy `VulnerableAuction`:**
-* In the **Contract** dropdown, choose `VulnerableAuction` and click **Deploy**.
+1. Open [Remix IDE](https://remix.ethereum.org) in your web browser.
+2. In the **File Explorer**, expand the `contracts/` directory (or click the **New File** icon next to the workspace name).
+3. Create three distinct files and paste their respective code:
+* `VulnerableAuction.sol`
+* `Attacker.sol`
+* `SecureAuction.sol`
 
 
-2. **Student A Places a Valid Bid:**
-* Switch to **Account 1** (`0x5B3...`).
-* Set **Value**: `1`, Unit: `Ether`.
-* Click `bid`.
-* Click `highestBidder` to inspect: it returns Account 1's address.
+4. Click on the **Solidity Compiler** tab on the left sidebar:
+* Verify the **Compiler** version dropdown is set to `0.8.20` or higher (e.g., `0.8.26`).
+* Click **Compile VulnerableAuction.sol** (or press `Ctrl+S` / `Cmd+S` while viewing the file).
+* Compile `Attacker.sol` and `SecureAuction.sol` as well. A green checkmark will appear on the compiler icon when compilation succeeds.
 
 
-3. **The Attacker Claims the Lead:**
-* Switch to **Account 2** (`0xAb8...`).
-* In the **Contract** dropdown, select `Attacker` and click **Deploy**.
-* Copy the deployed address of `VulnerableAuction`.
-* In the deployed `Attacker` panel, paste the address into the `_target` input box of `attack`.
-* Set **Value**: `2`, Unit: `Ether`.
-* Click `attack`.
-* Check `highestBidder` on `VulnerableAuction`: it now displays the address of the `Attacker` contract.
+
+---
+
+### Step 2: Deploying the Vulnerable Target
+
+1. Navigate to the **Deploy & Run Transactions** tab on the left sidebar.
+2. Set the **Environment** dropdown to `Remix VM (Cancun)` (or any available Remix VM fork).
+3. Select **Account 1** (the first account in the **Account** dropdown list, e.g., `0x5B38Da6a701c568545dCfcB03FcB875f56beddC4`, which starts with 100 ETH).
+4. Set the **Contract** dropdown to `VulnerableAuction - contracts/VulnerableAuction.sol`.
+5. Click the orange **Deploy** button.
+6. Scroll down to the **Deployed Contracts** section at the bottom-left. Click the small right-facing arrow next to `VULNERABLEAUCTION` to expand its interactive buttons:
+* **Red/Orange button:** `bid` (writes state and accepts native ETH).
+* **Blue buttons:** `highestBidder` and `highestBid` (read-only calls).
 
 
-4. **Student B Tries to Bid (DoS Lockout):**
-* Switch to **Account 3** (`0x4B2...`).
-* Set **Value**: `3`, Unit: `Ether`.
-* Click `bid` on `VulnerableAuction`.
-* **Console Output:** The transaction reverts:
+
+---
+
+### Step 3: Student A Places a Legitimate Bid
+
+1. Ensure **Account 1** (`0x5B3...`) is still selected in the **Account** dropdown.
+2. In the **Value** input field above the Contract dropdown:
+* Type `1` in the number box.
+* Change the unit dropdown from `Wei` to **`Ether`**.
+
+
+3. Click the red/orange **`bid`** button under `VULNERABLEAUCTION`.
+4. **Inspect the State:**
+* Click the blue **`highestBidder`** button: the address returned is `0x5B38Da6a701c568545dCfcB03FcB875f56beddC4` (Account 1).
+* Click the blue **`highestBid`** button: the value returned is `1000000000000000000` (1 ETH in Wei).
+* Account 1's balance in the Account dropdown is now ~98.99 ETH (1 ETH bid + negligible gas fee).
+
+
+
+---
+
+### Step 4: The Attacker Exploit Contract Enters
+
+1. Switch to **Account 2** in the **Account** dropdown (e.g., `0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2`).
+2. Set the **Contract** dropdown to `Attacker - contracts/Attacker.sol`.
+3. Click the orange **Deploy** button.
+4. Under **Deployed Contracts**, you will now see two contracts. Expand the new **`ATTACKER`** contract.
+5. **Copy the Target Address:**
+* In the `VULNERABLEAUCTION` section, click the small **Copy** icon next to its contract name to copy its deployed address to your clipboard.
+
+
+6. **Configure the Exploit:**
+* In the expanded `ATTACKER` contract panel, paste that copied address into the `_target` input field next to the `attack` button.
+* Scroll up to the **Value** field: enter `2` and select **`Ether`**.
+
+
+7. Click the red/orange **`attack`** button.
+8. **Verify the Hijack:**
+* Under `VULNERABLEAUCTION`, click **`highestBidder`**. Notice the address has changed to the **address of the `Attacker` contract**, not an EOA.
+* Click **`highestBid`**: it now reads `2000000000000000000` (2 ETH in Wei).
+* Check **Account 1**: Notice Account 1 was automatically refunded their 1 ETH and their balance is back to ~99.99 ETH. Everything appears to work normally—until the next user steps in.
+
+
+
+---
+
+### Step 5: Verifying the Denial of Service (The Lockout)
+
+1. Switch to **Account 3** in the **Account** dropdown (e.g., `0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db`).
+2. Scroll to the **Value** field: enter `3` and select **`Ether`**.
+3. In the deployed `VULNERABLEAUCTION` panel, click the red/orange **`bid`** button.
+4. **Observe the Failure:**
+* The transaction **fails immediately** and does not execute.
+* Open the Remix bottom console terminal. You will see a red cross and the following error:
 ```text
 transact to VulnerableAuction.bid errored: VM error: revert.
 revert: DoS Attack: I refuse refunds! Auction is permanently locked.
@@ -292,48 +349,47 @@ revert: DoS Attack: I refuse refunds! Auction is permanently locked.
 ```
 
 
-* **Result:** No account can ever outbid the contract. `VulnerableAuction` is permanently bricked.
+* Click the blue **`highestBidder`** button on `VULNERABLEAUCTION`. It **remains the Attacker contract**.
+* Even if a user bids 100 ETH, the transaction will consistently revert. The contract is permanently locked.
 
 
 
 ---
 
-### Phase B: Testing the Resilient Pull Pattern
+### Step 6: Deploying & Verifying the Secure Fix
 
-```
-Step 1: Deploy SecureAuction
-Step 2: Account 1 bids 1 ETH  ------> Account 1 is highestBidder
-Step 3: Attacker bids 2 ETH   ------> Attacker is highestBidder
-Step 4: Account 3 bids 3 ETH  ------> ✅ SUCCESS! Account 3 is highestBidder
-Step 5: Account 1 withdraws   ------> ✅ Account 1 gets 1 ETH back
+Now prove to the students how the Pull-over-Push pattern completely neutralizes this attack:
 
-```
-
-1. **Deploy `SecureAuction`:**
-* In the **Contract** dropdown, select `SecureAuction` and click **Deploy**.
+1. In the **Contract** dropdown, select `SecureAuction - contracts/SecureAuction.sol`.
+2. Using **Account 1**: Click **Deploy**. Expand the new `SECUREAUCTION` panel.
+3. **Account 1 Bids:**
+* Set **Value** to `1 Ether`.
+* Click `bid` on `SECUREAUCTION`. (`highestBidder` is now Account 1).
 
 
-2. **Account 1 Bids:**
-* Using **Account 1**: Set Value to `1 Ether`, click `bid`.
+4. **Attacker Bids via Exploit Contract:**
+* Copy the contract address of `SECUREAUCTION`.
+* Switch to **Account 2**.
+* In the existing `ATTACKER` contract panel, paste the `SECUREAUCTION` address into the `_target` field.
+* Set **Value** to `2 Ether`.
+* Click `attack`.
+* Click `highestBidder` on `SECUREAUCTION`: it is now the `Attacker` contract.
 
 
-3. **Attacker Bids via `attack`:**
-* Copy the address of `SecureAuction`.
-* Paste it into the `_target` input of the already-deployed `Attacker` contract.
-* Using **Account 2**: Set Value to `2 Ether`, click `attack`.
-* Check `highestBidder`: it is now the `Attacker` contract address.
+5. **Account 3 Bids (Defense Verification):**
+* Switch to **Account 3**.
+* Set **Value** to `3 Ether`.
+* Click `bid` on `SECUREAUCTION`.
+* **Result:** The transaction **succeeds**!
+* Click `highestBidder`: Account 3 is now the active leader. The contract did not freeze.
 
 
-4. **Account 3 Bids:**
-* Switch to **Account 3**: Set Value to `3 Ether`, click `bid`.
-* **Result:** Transaction **succeeds**. Account 3 is now `highestBidder`.
-
-
-5. **Withdraw Refund:**
+6. **Verify Isolated Withdrawal:**
 * Switch back to **Account 1**.
-* Pass Account 1's address into `pendingReturns`: it returns `1000000000000000000` (1 ETH).
-* Click `withdraw`. Account 1 receives their 1 ETH refund.
-* If the Attacker tries calling `withdraw()`, only the Attacker's personal transaction fails. The core contract remains unblocked.
+* In `SECUREAUCTION`, paste Account 1's address into the `pendingReturns` field and click the blue button. It returns `1000000000000000000` (1 ETH).
+* Click the orange **`withdraw`** button.
+* Account 1's balance immediately receives the 1 ETH refund.
+* If the `Attacker` contract attempts to call `withdraw`, its own `receive()` will reject it, but the failure remains strictly confined to the attacker.
 
 
 
@@ -342,36 +398,35 @@ Step 5: Account 1 withdraws   ------> ✅ Account 1 gets 1 ETH back
 ## 6. Why Did It Revert? Deep Dive into the EVM
 
 ```mermaid
-
 sequenceDiagram
     autonumber
     participant VA as VulnerableAuction
     participant AC as Attacker Contract
-    participant EVM as EVM State / Ledger
+    participant EVM as EVM State and Ledger
 
-    VA->>AC: Low-level call: payable(highestBidder).call{value: highestBid}("")
+    VA->>AC: Low-level call to refund highestBid
     activate AC
-    Note over AC: receive() runs: revert("DoS Attack!")
-    AC-->>VA: Returns (success = false, revertData)
+    Note over AC: receive triggers revert
+    AC-->>VA: Return success equals false
     deactivate AC
 
-    Note over VA: require(success, "Refund failed") evaluates to false
+    Note over VA: require success fails
     VA->>EVM: Trigger transaction-level revert
     activate EVM
-    Note over EVM: 1. Discard uncommitted storage modifications<br/>2. Revert highestBidder back to Attacker<br/>3. Return unspent gas to caller
+    Note over EVM: Roll back storage modifications and cancel bid
     EVM-->>VA: Revert confirmed
     deactivate EVM
 
 ```
 
-1. **EOAs vs. Smart Contracts:** An Externally Owned Account (EOA) has no code and accepts ETH automatically. Smart contracts execute arbitrary logic upon receiving ETH via `receive()` or `fallback()`.
-2. **Transaction Atomicity:** Transactions on Ethereum are atomic: either every instruction succeeds, or every storage change is discarded. When `require(success)` evaluates to `false`, the entire transaction unwinds.
-3. **Control Inversion Risk:** Coupling an external call to state advancement lets an untrusted recipient dictate whether that state advancement is allowed to finalize.
+1. **EOAs vs. Smart Contracts:** An Externally Owned Account (EOA) has no contract code; it accepts incoming native ETH unconditionally as long as gas limits are satisfied. Smart contracts execute custom fallback logic whenever they receive funds.
+2. **Transaction Atomicity:** EVM transactions are all-or-nothing. If an internal sub-call reverts and the calling contract requires that sub-call to succeed via `require(success)`, the entire execution state is rolled back.
+3. **Control Inversion Risk:** Coupling external payments directly into state-changing functions relinquishes execution control to an untrusted external party.
 
 ---
 
 ## 7. Summary & Best Practices
 
-1. **Favor Pull Over Push for Payments:** Never send native ETH to arbitrary addresses inside core functions. Record balances in a `mapping(address => uint256)` and let users pull their funds independently.
-2. **Follow Checks-Effects-Interactions (CEI):** In any withdrawal routine, zero out the caller's recorded balance *before* executing the transfer to protect against reentrancy attacks.
-3. **Isolate Failure Domains:** When interacting with untrusted external contracts, assume the call can fail, consume all forwarded gas, or revert. A single external entity should never possess the leverage to block other users.
+1. **Favor Pull Over Push for Payments:** Never transmit native currency to arbitrary addresses inside core operations. Maintain an internal ledger (`mapping(address => uint256)`) and let users withdraw their own funds individually.
+2. **Follow Checks-Effects-Interactions (CEI):** In any withdrawal routine, zero out the caller's recorded balance (`effects`) *before* executing the transfer (`interactions`) to guard against reentrancy attacks.
+3. **Isolate Failure Domains:** When interacting with untrusted external contracts, assume the call can fail, consume all forwarded gas, or revert. A single external party's failure should never be capable of halting the contract for others.
