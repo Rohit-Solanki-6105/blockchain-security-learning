@@ -6,25 +6,25 @@ A complete educational manual, architectural specification, and hands-on laborat
 
 ## Table of Contents
 
-1. [Core Concepts: What is a Reentrancy Attack?](https://www.google.com/search?q=%231-core-concepts-what-is-a-reentrancy-attack)
-2. [The Architectural Flaw: State Updates vs. External Calls](https://www.google.com/search?q=%232-the-architectural-flaw-state-updates-vs-external-calls)
-3. [Visualizing Attack & Defense (Diagrams)](https://www.google.com/search?q=%233-visualizing-attack--defense-mermaid-diagrams)
+1. [Core Concepts: What is a Reentrancy Attack?](#1-core-concepts-what-is-a-reentrancy-attack)
+2. [The Architectural Flaw: State Updates vs. External Calls](#2-the-architectural-flaw-state-updates-vs-external-calls)
+3. [Visualizing Attack & Defense (Diagrams)](#3-visualizing-attack--defense-mermaid-diagrams)
 
-* [3.1 Reentrancy Attack Sequence](https://www.google.com/search?q=%2331-reentrancy-attack-sequence)
-* [3.2 Secure Resolution: Checks-Effects-Interactions & Mutex](https://www.google.com/search?q=%2332-secure-resolution-checks-effects-interactions--mutex)
+* [3.1 Reentrancy Attack Sequence](#31-reentrancy-attack-sequence)
+* [3.2 Secure Resolution: Checks-Effects-Interactions & Mutex](#32-secure-resolution-checks-effects-interactions--mutex)
 
-4. [Contract Architecture Overview (Conceptual Breakdown)](https://www.google.com/search?q=%234-contract-architecture-overview-conceptual-breakdown)
-5. [Complete Hands-On Remix IDE Lab Guide](https://www.google.com/search?q=%235-complete-hands-on-remix-ide-lab-guide)
+4. [Contract Architecture Overview (Conceptual Breakdown)](#4-contract-architecture-overview-conceptual-breakdown)
+5. [Complete Hands-On Remix IDE Lab Guide](#5-complete-hands-on-remix-ide-lab-guide)
 
-* [Step 1: Workspace & Compiler Setup](https://www.google.com/search?q=%23step-1-workspace--compiler-setup)
-* [Step 2: Deploying the Target Bank & Depositing Funds](https://www.google.com/search?q=%23step-2-deploying-the-target-bank--depositing-funds)
-* [Step 3: Deploying the Attacker Contract](https://www.google.com/search?q=%23step-3-deploying-the-attacker-contract)
-* [Step 4: Executing the Reentrancy Exploit & Draining the Vault](https://www.google.com/search?q=%23step-4-executing-the-reentrancy-exploit--draining-the-vault)
-* [Step 5: Deploying & Verifying the Secure Fix (`SecureBank`)](https://www.google.com/search?q=%23step-5-deploying--verifying-the-secure-fix-securebank)
+* [Step 1: Workspace & Compiler Setup](#step-1-workspace--compiler-setup)
+* [Step 2: Deploying the Target Bank & Depositing Funds](#step-2-deploying-the-target-bank--depositing-funds)
+* [Step 3: Deploying the Attacker Contract](#step-3-deploying-the-attacker-contract)
+* [Step 4: Executing the Reentrancy Exploit & Draining the Vault](#step-4-executing-the-reentrancy-exploit--draining-the-vault)
+* [Step 5: Deploying & Verifying the Secure Fix (`SecureBank`)](#step-5-deploying--verifying-the-secure-fix-securebank)
 
-6. [Why Did It Drain? Deep Dive into the EVM Execution Stack](https://www.google.com/search?q=%236-why-did-it-drain-deep-dive-into-the-evm-execution-stack)
-7. [Real-World Case Study: The DAO Hack (2016)](https://www.google.com/search?q=%237-real-world-case-study-the-dao-hack-2016)
-8. [Summary & Best Practices](https://www.google.com/search?q=%238-summary--best-practices)
+6. [Why Did It Drain? Deep Dive into the EVM Execution Stack](#6-why-did-it-drain-deep-dive-into-the-evm-execution-stack)
+7. [Real-World Case Study: The DAO Hack (2016)](#7-real-world-case-study-the-dao-hack-2016)
+8. [Summary & Best Practices](#8-summary--best-practices)
 
 ---
 

@@ -6,32 +6,32 @@ A complete educational manual, architectural specification, and hands-on laborat
 
 ## Table of Contents
 
-1. [Core Concepts: What is a Smart Contract DoS?](https://www.google.com/search?q=%231-core-concepts-what-is-a-smart-contract-dos)
-2. [The Vulnerability: Push vs. Pull Payments](https://www.google.com/search?q=%232-the-vulnerability-push-vs-pull-payments)
-3. [Visualizing Attack & Defense (Diagrams)](https://www.google.com/search?q=%233-visualizing-attack--defense-mermaid-diagrams)
+1. [Core Concepts: What is a Smart Contract DoS?](#1-core-concepts-what-is-a-smart-contract-dos)
+2. [The Vulnerability: Push vs. Pull Payments](#2-the-vulnerability-push-vs-pull-payments)
+3. [Visualizing Attack & Defense (Diagrams)](#3-visualizing-attack--defense-mermaid-diagrams)
 
-* [3.1 Push Payment Failure Sequence](https://www.google.com/search?q=%2331-push-payment-failure-sequence)
-* [3.2 Pull Payment Resolution Sequence](https://www.google.com/search?q=%2332-pull-payment-resolution-sequence)
-* [3.3 EVM Call Stack & Revert Flow](https://www.google.com/search?q=%2333-evm-call-stack--revert-flow)
+* [3.1 Push Payment Failure Sequence](#31-push-payment-failure-sequence)
+* [3.2 Pull Payment Resolution Sequence](#32-pull-payment-resolution-sequence)
+* [3.3 EVM Call Stack & Revert Flow](#33-evm-call-stack--revert-flow)
 
-4. [Source Code Implementation](https://www.google.com/search?q=%234-source-code-implementation)
+4. [Source Code Implementation](#4-source-code-implementation)
 
-* [4.1 VulnerableAuction.sol](https://www.google.com/search?q=%2341-vulnerableauctionsol)
-* [4.2 Attacker.sol](https://www.google.com/search?q=%2342-attackersol)
-* [4.3 SecureAuction.sol](https://www.google.com/search?q=%2343-secureauctionsol)
+* [4.1 VulnerableAuction.sol](#41-vulnerableauctionsol)
+* [4.2 Attacker.sol](#42-attackersol)
+* [4.3 SecureAuction.sol](#43-secureauctionsol)
 
-5. [Complete Hands-On Remix IDE Lab Guide](https://www.google.com/search?q=%235-complete-hands-on-remix-ide-lab-guide)
+5. [Complete Hands-On Remix IDE Lab Guide](#5-complete-hands-on-remix-ide-lab-guide)
 
-* [Step 1: Remix IDE Workspace & Compiler Setup](https://www.google.com/search?q=%23step-1-remix-ide-workspace--compiler-setup)
-* [Step 2: Deploying the Vulnerable Target](https://www.google.com/search?q=%23step-2-deploying-the-vulnerable-target)
-* [Step 3: Student A Places a Legitimate Bid](https://www.google.com/search?q=%23step-3-student-a-places-a-legitimate-bid)
-* [Step 4: The Attacker Exploit Contract Enters](https://www.google.com/search?q=%23step-4-the-attacker-exploit-contract-enters)
-* [Step 5: Verifying the Denial of Service (The Lockout)](https://www.google.com/search?q=%23step-5-verifying-the-denial-of-service-the-lockout)
-* [Step 6: Deploying & Verifying the Secure Fix](https://www.google.com/search?q=%23step-6-deploying--verifying-the-secure-fix)
+* [Step 1: Remix IDE Workspace & Compiler Setup](#step-1-remix-ide-workspace--compiler-setup)
+* [Step 2: Deploying the Vulnerable Target](#step-2-deploying-the-vulnerable-target)
+* [Step 3: Student A Places a Legitimate Bid](#step-3-student-a-places-a-legitimate-bid)
+* [Step 4: The Attacker Exploit Contract Enters](#step-4-the-attacker-exploit-contract-enters)
+* [Step 5: Verifying the Denial of Service (The Lockout)](#step-5-verifying-the-denial-of-service-the-lockout)
+* [Step 6: Deploying & Verifying the Secure Fix](#step-6-deploying--verifying-the-secure-fix)
 
-6. [Why Did It Revert? Deep Dive into the EVM](https://www.google.com/search?q=%236-why-did-it-revert-deep-dive-into-the-evm)
-7. [Real-World Case Study: The Parity Wallet Freeze (2017)](https://www.google.com/search?q=%237-real-world-case-study-the-parity-wallet-freeze-2017)
-8. [Summary & Best Practices](https://www.google.com/search?q=%238-summary--best-practices)
+6. [Why Did It Revert? Deep Dive into the EVM](#6-why-did-it-revert-deep-dive-into-the-evm)
+7. [Real-World Case Study: The Parity Wallet Freeze (2017)](#7-real-world-case-study-the-parity-wallet-freeze-2017)
+8. [Summary & Best Practices](#8-summary--best-practices)
 
 ---
 
