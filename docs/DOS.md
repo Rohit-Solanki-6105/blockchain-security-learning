@@ -9,18 +9,19 @@ A complete educational manual, architectural specification, and hands-on laborat
 1. [Core Concepts: What is a Smart Contract DoS?](https://www.google.com/search?q=%231-core-concepts-what-is-a-smart-contract-dos)
 2. [The Vulnerability: Push vs. Pull Payments](https://www.google.com/search?q=%232-the-vulnerability-push-vs-pull-payments)
 3. [Visualizing Attack & Defense (Diagrams)](https://www.google.com/search?q=%233-visualizing-attack--defense-mermaid-diagrams)
+
 * [3.1 Push Payment Failure Sequence](https://www.google.com/search?q=%2331-push-payment-failure-sequence)
 * [3.2 Pull Payment Resolution Sequence](https://www.google.com/search?q=%2332-pull-payment-resolution-sequence)
 * [3.3 EVM Call Stack & Revert Flow](https://www.google.com/search?q=%2333-evm-call-stack--revert-flow)
 
-
 4. [Source Code Implementation](https://www.google.com/search?q=%234-source-code-implementation)
+
 * [4.1 VulnerableAuction.sol](https://www.google.com/search?q=%2341-vulnerableauctionsol)
 * [4.2 Attacker.sol](https://www.google.com/search?q=%2342-attackersol)
 * [4.3 SecureAuction.sol](https://www.google.com/search?q=%2343-secureauctionsol)
 
-
 5. [Complete Hands-On Remix IDE Lab Guide](https://www.google.com/search?q=%235-complete-hands-on-remix-ide-lab-guide)
+
 * [Step 1: Remix IDE Workspace & Compiler Setup](https://www.google.com/search?q=%23step-1-remix-ide-workspace--compiler-setup)
 * [Step 2: Deploying the Vulnerable Target](https://www.google.com/search?q=%23step-2-deploying-the-vulnerable-target)
 * [Step 3: Student A Places a Legitimate Bid](https://www.google.com/search?q=%23step-3-student-a-places-a-legitimate-bid)
@@ -28,9 +29,9 @@ A complete educational manual, architectural specification, and hands-on laborat
 * [Step 5: Verifying the Denial of Service (The Lockout)](https://www.google.com/search?q=%23step-5-verifying-the-denial-of-service-the-lockout)
 * [Step 6: Deploying & Verifying the Secure Fix](https://www.google.com/search?q=%23step-6-deploying--verifying-the-secure-fix)
 
-
 6. [Why Did It Revert? Deep Dive into the EVM](https://www.google.com/search?q=%236-why-did-it-revert-deep-dive-into-the-evm)
-7. [Summary & Best Practices](https://www.google.com/search?q=%237-summary--best-practices)
+7. [Real-World Case Study: The Parity Wallet Freeze (2017)](https://www.google.com/search?q=%237-real-world-case-study-the-parity-wallet-freeze-2017)
+8. [Summary & Best Practices](https://www.google.com/search?q=%238-summary--best-practices)
 
 ---
 
@@ -80,6 +81,7 @@ sequenceDiagram
     deactivate V
     Note over B: Bid cancelled and Attacker stays on top
 
+
 ```
 
 ---
@@ -106,9 +108,9 @@ sequenceDiagram
     Note over StudentA,Auction: Legitimate users withdraw their own refunds independently
     StudentA->>Auction: withdraw()
     activate Auction
-    Auction->>StudentA: call{value: pendingBalance}("")
     Auction-->>StudentA: Funds retrieved!
     deactivate Auction
+
 
 ```
 
@@ -134,6 +136,7 @@ flowchart TD
     style C fill:#ffebee,stroke:#c62828,stroke-width:2px
     style D fill:#ffcdd2,stroke:#b71c1c,stroke-width:2px
     style G fill:#b71c1c,stroke:#b71c1c,stroke-width:2px,color:#fff
+
 
 ```
 
@@ -169,6 +172,7 @@ contract VulnerableAuction {
     }
 }
 
+
 ```
 
 ---
@@ -195,6 +199,7 @@ contract Attacker {
         revert("DoS Attack: I refuse refunds! Auction is permanently locked.");
     }
 }
+
 
 ```
 
@@ -239,6 +244,7 @@ contract SecureAuction {
     }
 }
 
+
 ```
 
 ---
@@ -262,17 +268,16 @@ Before executing transactions, note the three key tabs on the left navigation ba
 1. Open [Remix IDE](https://remix.ethereum.org) in your web browser.
 2. In the **File Explorer**, expand the `contracts/` directory (or click the **New File** icon next to the workspace name).
 3. Create three distinct files and paste their respective code:
+
 * `VulnerableAuction.sol`
 * `Attacker.sol`
 * `SecureAuction.sol`
 
-
 4. Click on the **Solidity Compiler** tab on the left sidebar:
+
 * Verify the **Compiler** version dropdown is set to `0.8.20` or higher (e.g., `0.8.26`).
 * Click **Compile VulnerableAuction.sol** (or press `Ctrl+S` / `Cmd+S` while viewing the file).
 * Compile `Attacker.sol` and `SecureAuction.sol` as well. A green checkmark will appear on the compiler icon when compilation succeeds.
-
-
 
 ---
 
@@ -284,10 +289,9 @@ Before executing transactions, note the three key tabs on the left navigation ba
 4. Set the **Contract** dropdown to `VulnerableAuction - contracts/VulnerableAuction.sol`.
 5. Click the orange **Deploy** button.
 6. Scroll down to the **Deployed Contracts** section at the bottom-left. Click the small right-facing arrow next to `VULNERABLEAUCTION` to expand its interactive buttons:
+
 * **Red/Orange button:** `bid` (writes state and accepts native ETH).
 * **Blue buttons:** `highestBidder` and `highestBid` (read-only calls).
-
-
 
 ---
 
@@ -295,17 +299,16 @@ Before executing transactions, note the three key tabs on the left navigation ba
 
 1. Ensure **Account 1** (`0x5B3...`) is still selected in the **Account** dropdown.
 2. In the **Value** input field above the Contract dropdown:
+
 * Type `1` in the number box.
 * Change the unit dropdown from `Wei` to **`Ether`**.
 
-
 3. Click the red/orange **`bid`** button under `VULNERABLEAUCTION`.
 4. **Inspect the State:**
+
 * Click the blue **`highestBidder`** button: the address returned is `0x5B38Da6a701c568545dCfcB03FcB875f56beddC4` (Account 1).
 * Click the blue **`highestBid`** button: the value returned is `1000000000000000000` (1 ETH in Wei).
 * Account 1's balance in the Account dropdown is now ~98.99 ETH (1 ETH bid + negligible gas fee).
-
-
 
 ---
 
@@ -316,21 +319,20 @@ Before executing transactions, note the three key tabs on the left navigation ba
 3. Click the orange **Deploy** button.
 4. Under **Deployed Contracts**, you will now see two contracts. Expand the new **`ATTACKER`** contract.
 5. **Copy the Target Address:**
+
 * In the `VULNERABLEAUCTION` section, click the small **Copy** icon next to its contract name to copy its deployed address to your clipboard.
 
-
 6. **Configure the Exploit:**
+
 * In the expanded `ATTACKER` contract panel, paste that copied address into the `_target` input field next to the `attack` button.
 * Scroll up to the **Value** field: enter `2` and select **`Ether`**.
 
-
 7. Click the red/orange **`attack`** button.
 8. **Verify the Hijack:**
+
 * Under `VULNERABLEAUCTION`, click **`highestBidder`**. Notice the address has changed to the **address of the `Attacker` contract**, not an EOA.
 * Click **`highestBid`**: it now reads `2000000000000000000` (2 ETH in Wei).
 * Check **Account 1**: Notice Account 1 was automatically refunded their 1 ETH and their balance is back to ~99.99 ETH. Everything appears to work normally—until the next user steps in.
-
-
 
 ---
 
@@ -340,19 +342,19 @@ Before executing transactions, note the three key tabs on the left navigation ba
 2. Scroll to the **Value** field: enter `3` and select **`Ether`**.
 3. In the deployed `VULNERABLEAUCTION` panel, click the red/orange **`bid`** button.
 4. **Observe the Failure:**
+
 * The transaction **fails immediately** and does not execute.
 * Open the Remix bottom console terminal. You will see a red cross and the following error:
+
 ```text
 transact to VulnerableAuction.bid errored: VM error: revert.
 revert: DoS Attack: I refuse refunds! Auction is permanently locked.
 
-```
 
+```
 
 * Click the blue **`highestBidder`** button on `VULNERABLEAUCTION`. It **remains the Attacker contract**.
 * Even if a user bids 100 ETH, the transaction will consistently revert. The contract is permanently locked.
-
-
 
 ---
 
@@ -363,11 +365,12 @@ Now prove to the students how the Pull-over-Push pattern completely neutralizes 
 1. In the **Contract** dropdown, select `SecureAuction - contracts/SecureAuction.sol`.
 2. Using **Account 1**: Click **Deploy**. Expand the new `SECUREAUCTION` panel.
 3. **Account 1 Bids:**
+
 * Set **Value** to `1 Ether`.
 * Click `bid` on `SECUREAUCTION`. (`highestBidder` is now Account 1).
 
-
 4. **Attacker Bids via Exploit Contract:**
+
 * Copy the contract address of `SECUREAUCTION`.
 * Switch to **Account 2**.
 * In the existing `ATTACKER` contract panel, paste the `SECUREAUCTION` address into the `_target` field.
@@ -375,23 +378,21 @@ Now prove to the students how the Pull-over-Push pattern completely neutralizes 
 * Click `attack`.
 * Click `highestBidder` on `SECUREAUCTION`: it is now the `Attacker` contract.
 
-
 5. **Account 3 Bids (Defense Verification):**
+
 * Switch to **Account 3**.
 * Set **Value** to `3 Ether`.
 * Click `bid` on `SECUREAUCTION`.
 * **Result:** The transaction **succeeds**!
 * Click `highestBidder`: Account 3 is now the active leader. The contract did not freeze.
 
-
 6. **Verify Isolated Withdrawal:**
+
 * Switch back to **Account 1**.
 * In `SECUREAUCTION`, paste Account 1's address into the `pendingReturns` field and click the blue button. It returns `1000000000000000000` (1 ETH).
 * Click the orange **`withdraw`** button.
 * Account 1's balance immediately receives the 1 ETH refund.
 * If the `Attacker` contract attempts to call `withdraw`, its own `receive()` will reject it, but the failure remains strictly confined to the attacker.
-
-
 
 ---
 
@@ -417,6 +418,7 @@ sequenceDiagram
     EVM-->>VA: Revert confirmed
     deactivate EVM
 
+
 ```
 
 1. **EOAs vs. Smart Contracts:** An Externally Owned Account (EOA) has no contract code; it accepts incoming native ETH unconditionally as long as gas limits are satisfied. Smart contracts execute custom fallback logic whenever they receive funds.
@@ -425,7 +427,19 @@ sequenceDiagram
 
 ---
 
-## 7. Summary & Best Practices
+## 7. Real-World Case Study: The Parity Wallet Freeze (2017)
+
+Denial of Service and permanent contract freezing vulnerabilities have caused massive real-world financial losses in production Web3 environments.
+
+* **Background:** In November 2017, the **Parity Multi-sig Wallet**—one of the most popular Ethereum wallet infrastructures at the time—suffered a catastrophic architectural flaw. The wallet contract was structured such that core logic lived inside a shared "library" contract, while individual user wallets delegated calls to it.
+* **The Exploit:** Due to a lack of proper initialization access controls, an accidental user interaction (and subsequent panic) caused someone to take ownership of the shared library contract itself and invoke `selfdestruct()`.
+* **The Impact:** Because the library contract was destroyed, every single dependent multi-sig wallet instantly lost its execution code. Over **587 wallets** holding approximately **$280 million worth of ETH** (around 513,774 ETH) were permanently frozen overnight.
+* **The Permanent Lockout:** Unlike network-level DDoS attacks which are temporary, smart contract logic freezes are permanent. Despite years of community discussions and Ethereum core upgrade proposals, those funds remain locked and inaccessible to this day.
+* **Industry Takeaway:** This disaster demonstrated that a single un-isolated failure point or uncontrolled external dependency can brick an entire protocol ecosystem permanently.
+
+---
+
+## 8. Summary & Best Practices
 
 1. **Favor Pull Over Push for Payments:** Never transmit native currency to arbitrary addresses inside core operations. Maintain an internal ledger (`mapping(address => uint256)`) and let users withdraw their own funds individually.
 2. **Follow Checks-Effects-Interactions (CEI):** In any withdrawal routine, zero out the caller's recorded balance (`effects`) *before* executing the transfer (`interactions`) to guard against reentrancy attacks.

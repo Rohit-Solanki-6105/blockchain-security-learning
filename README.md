@@ -9,6 +9,7 @@ A hands-on laboratory repository demonstrating smart contract vulnerabilities, i
 | Vulnerability | Attack Pattern | Defense Pattern | Documentation |
 | :--- | :--- | :--- | :--- |
 | **Denial of Service (DoS)** | Unexpected Revert (Push Payment Lockout) | Pull-over-Push (Isolated Balance Ledger) | [DOS.md](./docs/DOS.md) |
+| **Reentrancy** | Recursive Fallback Drain | Checks-Effects-Interactions & Mutex Guard | [Reentrancy.md](./docs/Reentrancy.md) |
 
 ---
 

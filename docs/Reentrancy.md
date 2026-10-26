@@ -9,21 +9,22 @@ A complete educational manual, architectural specification, and hands-on laborat
 1. [Core Concepts: What is a Reentrancy Attack?](https://www.google.com/search?q=%231-core-concepts-what-is-a-reentrancy-attack)
 2. [The Architectural Flaw: State Updates vs. External Calls](https://www.google.com/search?q=%232-the-architectural-flaw-state-updates-vs-external-calls)
 3. [Visualizing Attack & Defense (Diagrams)](https://www.google.com/search?q=%233-visualizing-attack--defense-mermaid-diagrams)
+
 * [3.1 Reentrancy Attack Sequence](https://www.google.com/search?q=%2331-reentrancy-attack-sequence)
 * [3.2 Secure Resolution: Checks-Effects-Interactions & Mutex](https://www.google.com/search?q=%2332-secure-resolution-checks-effects-interactions--mutex)
 
-
 4. [Contract Architecture Overview (Conceptual Breakdown)](https://www.google.com/search?q=%234-contract-architecture-overview-conceptual-breakdown)
 5. [Complete Hands-On Remix IDE Lab Guide](https://www.google.com/search?q=%235-complete-hands-on-remix-ide-lab-guide)
+
 * [Step 1: Workspace & Compiler Setup](https://www.google.com/search?q=%23step-1-workspace--compiler-setup)
 * [Step 2: Deploying the Target Bank & Depositing Funds](https://www.google.com/search?q=%23step-2-deploying-the-target-bank--depositing-funds)
 * [Step 3: Deploying the Attacker Contract](https://www.google.com/search?q=%23step-3-deploying-the-attacker-contract)
 * [Step 4: Executing the Reentrancy Exploit & Draining the Vault](https://www.google.com/search?q=%23step-4-executing-the-reentrancy-exploit--draining-the-vault)
 * [Step 5: Deploying & Verifying the Secure Fix (`SecureBank`)](https://www.google.com/search?q=%23step-5-deploying--verifying-the-secure-fix-securebank)
 
-
 6. [Why Did It Drain? Deep Dive into the EVM Execution Stack](https://www.google.com/search?q=%236-why-did-it-drain-deep-dive-into-the-evm-execution-stack)
-7. [Summary & Best Practices](https://www.google.com/search?q=%237-summary--best-practices)
+7. [Real-World Case Study: The DAO Hack (2016)](https://www.google.com/search?q=%237-real-world-case-study-the-dao-hack-2016)
+8. [Summary & Best Practices](https://www.google.com/search?q=%238-summary--best-practices)
 
 ---
 
@@ -56,27 +57,24 @@ sequenceDiagram
     participant AttackerContract as ReentrancyAttacker
     participant Bank as VulnerableBank
 
-    Attacker->>AttackerContract: attack() [deposits 1 ETH]
+    Attacker->>AttackerContract: attack and deposit 1 ETH
     activate AttackerContract
-    AttackerContract->>Bank: deposit{value: 1 ETH}()
-    AttackerContract->>Bank: withdraw(1 ETH)
+    AttackerContract->>Bank: withdraw 1 ETH
     activate Bank
     
     Bank->>AttackerContract: transfer 1 ETH via low-level call
     activate AttackerContract
-    Note over AttackerContract: receive() executes: re-enters withdraw(1 ETH)!<br/>(State not updated yet; balance still shows 1 ETH)
+    Note over AttackerContract: receive triggers re-entry into withdraw
     
-    AttackerContract->>Bank: withdraw(1 ETH) [Recursive Loop]
+    AttackerContract->>Bank: withdraw again recursively
     Note over Bank: Bank sends another 1 ETH before ledger updates
     Bank-->>AttackerContract: transfer 1 ETH
     deactivate AttackerContract
     
-    Bank->>Bank: balances[msg.sender] -= 1 ETH (Too late!)
+    Bank->>Bank: balances updated too late
     deactivate Bank
     deactivate AttackerContract
-
 ```
-
 ---
 
 ### 3.2 Secure Resolution: Checks-Effects-Interactions & Mutex
@@ -99,6 +97,7 @@ sequenceDiagram
     SecureBank-->>User: Withdrawal complete
     deactivate SecureBank
 
+
 ```
 
 ---
@@ -110,10 +109,9 @@ To execute this laboratory, students interact with three distinct structural com
 1. **`VulnerableBank.sol` (The Target):** A basic vault that lets users deposit and withdraw ETH. Its flaw lies in executing `msg.sender.call{value: _amount}("")` *before* executing `balances[msg.sender] -= _amount`.
 2. **`ReentrancyAttacker.sol` (The Exploit):** A malicious contract featuring a custom `receive()` fallback handler. When it receives the refunded ETH, its fallback function automatically invokes `bank.withdraw()` again, creating an unyielding recursive loop until the vault is emptied of all liquidity.
 3. **`SecureBank.sol` (The Solution):** Implements two vital defenses:
+
 * **Checks-Effects-Interactions (CEI):** Updates the internal state (`balances[msg.sender] -= amount`) *prior* to initiating any external ETH transfer.
 * **Mutex Lock (Reentrancy Guard):** A boolean modifier (`locked`) that locks execution entry upon function call and unlocks it only after completion, completely blocking recursive entry.
-
-
 
 ---
 
@@ -125,16 +123,15 @@ This step-by-step walkthrough allows students to deploy the contracts, execute t
 
 1. Open [Remix IDE](https://remix.ethereum.org/) in your web browser.
 2. Create three separate files in your file explorer:
+
 * `VulnerableBank.sol`
 * `ReentrancyAttacker.sol`
 * `SecureBank.sol`
 
-
 3. Go to the **Solidity Compiler** tab on the left sidebar:
+
 * Set the compiler version to **`0.8.20`** or higher.
 * Compile all three files and verify green checkmarks appear.
-
-
 
 ---
 
@@ -145,12 +142,11 @@ This step-by-step walkthrough allows students to deploy the contracts, execute t
 3. Select **Account 1** from the **Account** dropdown (representing an honest user holding 100 ETH).
 4. Select **`VulnerableBank`** from the **Contract** dropdown and click orange **Deploy**.
 5. **Deposit Honest Funds:**
+
 * Expand `VULNERABLEBANK` under **Deployed Contracts**.
 * In the top-left **Value** box, type `5` and select **`Ether`**.
 * Click orange **`deposit`**.
 * Click blue **`getBalance`**: verify it returns `5000000000000000000` (5 ETH).
-
-
 
 ---
 
@@ -170,15 +166,14 @@ This step-by-step walkthrough allows students to deploy the contracts, execute t
 ### Step 4: Executing the Reentrancy Exploit & Draining the Vault
 
 1. Go back up to the top-left **Value** input box:
-* Type **`1`** and select **`Ether`** (this is the initial 1 ETH required to seed the attack).
 
+* Type **`1`** and select **`Ether`** (this is the initial 1 ETH required to seed the attack).
 
 2. In the expanded `REENTRANCYATTACKER` section, click the orange **`attack`** button.
 3. **Inspect the Result:**
+
 * Scroll down to `VULNERABLEBANK` and click blue **`getBalance`**.
 * **Result:** It now reads `0`! The attacker contract successfully recursively drained the entire vault (the honest user's 5 ETH plus the attacker's 1 ETH) in a single transaction.
-
-
 
 ---
 
@@ -187,26 +182,23 @@ This step-by-step walkthrough allows students to deploy the contracts, execute t
 1. Switch back to **Account 1** in the **Account** dropdown.
 2. Select **`SecureBank`** from the **Contract** dropdown and click orange **Deploy**. Expand `SECUREBANK`.
 3. **Deposit Honest Funds:**
+
 * Set **Value** to `5 Ether`.
 * Click `deposit` on `SECUREBANK`. (`getBalance` shows 5 ETH).
 
-
 4. **Deploy a New Attacker for the Secure Bank:**
+
 * Switch to **Account 2**.
 * Select **`ReentrancyAttacker`** from the contract dropdown.
 * Copy the deployed address of `SECUREBANK`, paste it into the `_bank` deployment input box, ensure Value is `0`, and click **Deploy**.
 
-
 5. **Attempt the Attack:**
+
 * Set **Value** to `1 Ether` in the top value box.
 * Click orange **`attack`** on the new `REENTRANCYATTACKER` panel.
 * **Inspect the Result:**
 * The transaction **reverts** with an error (e.g., `Transfer failed` or `Reentrant call detected!`).
 * Click `getBalance` on `SECUREBANK`: all funds remain 100% secure.
-
-
-
-
 
 ---
 
@@ -218,7 +210,18 @@ This step-by-step walkthrough allows students to deploy the contracts, execute t
 
 ---
 
-## 7. Summary & Best Practices
+## 7. Real-World Case Study: The DAO Hack (2016)
+
+The reentrancy vulnerability is not merely a theoretical construct; it is responsible for one of the most famous and catastrophic exploits in blockchain history.
+
+* **Background:** Launched in April 2016, **The DAO** was a decentralized autonomous organization structured as a venture capital fund on Ethereum. It raised an unprecedented $150 million worth of Ether through a massive token sale, accumulating roughly **14% of all circulating ETH** at the time.
+* **The Exploit:** On June 17, 2016, an attacker exploited a reentrancy flaw within The DAO's smart contract withdrawal and split logic. By executing recursive calls before internal balance tracking could decrement, the attacker siphoned **3.6 million ETH** (valued at approximately $60 million USD back then) into a child DAO.
+* **The Impact & Resolution:** The exploit posed an existential threat to the one-year-old Ethereum network. To rescue the ecosystem from complete collapse, the Ethereum community controversially decided to execute a protocol-level **hard fork** to roll back the malicious transactions and recover the funds. This decision split the network into two distinct blockchains: **Ethereum (ETH)** and **Ethereum Classic (ETC)**.
+* **Industry Takeaway:** The DAO hack permanently changed how smart contract developers approach architecture, cementing the **Checks-Effects-Interactions (CEI)** pattern and **Reentrancy Guards (`nonReentrant`)** as mandatory defensive standards across modern Web3 development.
+
+---
+
+## 8. Summary & Best Practices
 
 1. **Apply Checks-Effects-Interactions (CEI):** Always validate inputs (`Checks`), update contract state variables (`Effects`), and only then perform external calls or token transfers (`Interactions`).
 2. **Use Reentrancy Guards (Mutex Locks):** Implement modifiers like OpenZeppelin's `ReentrancyGuard` (`nonReentrant`) on all functions that handle asset transfers.
