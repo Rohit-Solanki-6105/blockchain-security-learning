@@ -8,7 +8,7 @@ A complete educational manual, architectural specification, and hands-on laborat
 
 1. [Core Concepts: What is a Smart Contract DoS?](https://www.google.com/search?q=%231-core-concepts-what-is-a-smart-contract-dos)
 2. [The Vulnerability: Push vs. Pull Payments](https://www.google.com/search?q=%232-the-vulnerability-push-vs-pull-payments)
-3. [Visualizing Attack & Defense (Mermaid Diagrams)](https://www.google.com/search?q=%233-visualizing-attack--defense-mermaid-diagrams)
+3. [Visualizing Attack & Defense (Diagrams)](https://www.google.com/search?q=%233-visualizing-attack--defense-mermaid-diagrams)
 * [3.1 Push Payment Failure Sequence](https://www.google.com/search?q=%2331-push-payment-failure-sequence)
 * [3.2 Pull Payment Resolution Sequence](https://www.google.com/search?q=%2332-pull-payment-resolution-sequence)
 * [3.3 EVM Call Stack & Revert Flow](https://www.google.com/search?q=%2333-evm-call-stack--revert-flow)
@@ -55,7 +55,7 @@ In smart contract architecture, **DoS operates on code logic and execution rules
 
 ---
 
-## 3. Visualizing Attack & Defense (Mermaid Diagrams)
+## 3. Visualizing Attack & Defense (Diagrams)
 
 ### 3.1 Push Payment Failure Sequence
 
