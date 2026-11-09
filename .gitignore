@@ -1,0 +1,19 @@
+# Python Virtual Environment
+venv/
+env/
+.env
+.venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Slither & Crytic Cache
+.slither/
+crytic-export/
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
